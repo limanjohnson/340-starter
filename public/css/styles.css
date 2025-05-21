@@ -41,6 +41,11 @@ header {
   color:#333;
 }
 
+nav ul li a {
+  color: white;
+  text-decoration: none;
+}
+
 /******* Navigation CSS ***************/
 
 nav ul{
@@ -200,6 +205,10 @@ footer {
 
   .header-container {
     margin-left:0;
+  }
+
+  body {
+    background-image: unset;
   }
 }
 
