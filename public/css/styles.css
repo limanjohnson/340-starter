@@ -189,6 +189,58 @@ main h1 {
   text-align:center;
 }
 
+/******* Vehicles Inventory CSS ***************/
+ul#inv-display {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap:10px;
+}
+
+ul#inv-display li {
+  height: 350px;
+  display: grid;
+  grid-template-rows: 1fr 1fr;
+  background-color:rgb(203, 211, 211);
+  padding:1em;
+
+  border-radius:3px;
+  border: solid rgb(190,197,196) 2px;
+}
+
+ul#inv-display li a {
+  justify-self:center;
+  align-self:center;
+}
+
+.namePrice {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.namePrice h2 a {
+  text-decoration:none;
+  color:#333;
+  padding:.25em;
+
+  font-size:.6em;
+
+  background: #13b0d4;
+  border-radius:5px;
+  border: solid 2px #13b0d4;
+  transition: all 0.3s ease;
+}
+
+.namePrice h2 a:hover {
+  background:#11a1c1;
+  border-color: #333;
+}
+
+.namePrice span {
+  font-size:1.4em;
+}
+
+
 /******* Footer CSS ***************/
 footer {
   background-color: #333;
@@ -209,6 +261,10 @@ footer {
 
   body {
     background-image: unset;
+  }
+
+  .namePrice h2 {
+    font-size:2em;
   }
 }
 
