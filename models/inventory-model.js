@@ -20,9 +20,15 @@ async function getInventoryByClassificationId(classification_id) {
         WHERE i.classification_id = $1`,
         [classification_id]
       )
+      if (data.rows.length === 0) {
+        const error = new Error(`No inventory items found for that classification ID`)
+        error.status = 404
+        throw error
+      }
       return data.rows
     } catch (error) {
-      console.error("getclassificationsbyid error " + error)
+      console.error("getclassificationsbyid error " + error.message)
+      throw error
     }
   }
 
@@ -43,9 +49,16 @@ async function getInventoryById(inv_id){
       `SELECT * FROM public.inventory where inv_id = $1`,
       [inv_id]
     )
+    if (data.rows.length === 0) {
+      // throw an error if no inventory items are found
+      const error = new Error( `No inventory item exists with that ID`)
+      error.status = 404
+      throw error
+    }
     return data.rows[0] // return a single object
   } catch (error) {
-    console.error("getInventoryById error " + error)
+    console.error("getInventoryById error " + error.message)
+    throw error
   }
 }
 
