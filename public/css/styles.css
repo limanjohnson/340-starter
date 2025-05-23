@@ -189,6 +189,11 @@ main h1 {
   text-align:center;
 }
 
+.header-image picture img {
+  width: 100%;
+  height: auto;
+}
+
 /******* Vehicles Inventory CSS ***************/
 ul#inv-display {
   display: grid;
@@ -239,6 +244,46 @@ ul#inv-display li a {
 .namePrice span {
   font-size:1.4em;
 }
+
+#inv-display {
+  margin-bottom:2em;
+}
+
+/******* Single Vehicle Details CSS ***************/
+
+#single-display {
+  margin-bottom:2em;
+}
+
+.vehicle-details {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 20px;
+}
+
+.image img {
+  width:100%;
+  height:auto;
+}
+
+.details {
+  display: grid;
+  gap: 10px;
+}
+
+
+.details-item {
+  display:flex;
+  align-items:center;
+
+  padding-left:.5em;
+}
+
+.details-item:nth-child(even) {
+  background:#e9e8e8;
+  border-radius:5px;
+}
+
 
 
 /******* Footer CSS ***************/

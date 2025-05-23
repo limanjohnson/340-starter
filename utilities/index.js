@@ -58,4 +58,37 @@ Util.buildClassificationGrid = async function(data){
     return grid
   }
 
+  /* ***********************
+ * Build the details view HTML
+ * ********************** */
+Util.buildDetailPage = async function(data){
+  let singleView = ''
+
+  if (data.length > 0) {
+  singleView = '<div id="single-display">'
+  data.forEach(vehicle => {
+    singleView += `
+      <div class="vehicle-details">
+        <div class="image">
+          <img src="${vehicle.inv_image}" alt="Image of ${vehicle.inv_make} ${vehicle.inv_model}"/>
+        </div>
+        <div class="details">
+          <h2 class="details-item">${vehicle.inv_make} ${vehicle.inv_model}</h2>
+          <p class="details-item">Year: ${vehicle.inv_year}</p>
+          <p class="details-item">${vehicle.inv_description}</p>
+          <p class="details-item">Price: $${new Intl.NumberFormat('en-US').format(vehicle.inv_price)}</p>
+          <p class="details-item">Mileage: ${new Intl.NumberFormat('en-US').format(vehicle.inv_miles)} miles</p>
+          <p class="details-item">Color: ${vehicle.inv_color}</p>
+        </div>
+      </div>
+    `
+  })
+  singleView += "</div>"
+
+  } else {
+    singleView += '<p class="notice">Sorry, this is not working correctly.</p>'
+  }
+return singleView
+}
+
 module.exports = Util
