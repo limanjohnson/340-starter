@@ -1,0 +1,20 @@
+<!-- Content heading -->
+<% if (title) { %>
+    <h1><%= title %></h1>
+    <% } else { %>
+    <h1>Login</h1>
+<%    } %>
+
+<!-- Message block -->
+<%- messages() %>
+
+<form action="/account/login" method="POST" class="login-form">
+    <div>
+        <label for="account_email">Email:</label>
+        <input type="email" name="account_email" id="account_email" />
+    </div>
+
+    <div>
+        <label for="account_password"></label>
+    </div>
+</form>

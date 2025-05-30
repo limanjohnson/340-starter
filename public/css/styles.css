@@ -194,6 +194,11 @@ main h1 {
   height: auto;
 }
 
+.notice {
+  color:red;
+  list-style: none;
+}
+
 /******* Vehicles Inventory CSS ***************/
 ul#inv-display {
   display: grid;
