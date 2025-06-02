@@ -9,6 +9,7 @@ const express = require("express")
 const expressLayouts = require("express-ejs-layouts")
 const env = require("dotenv").config()
 const app = express()
+const bodyParser = require("body-parser")
 const static = require("./routes/static")
 const baseController = require('./controllers/baseController')
 const accountRoute = require('./routes/accountRoute')
@@ -38,6 +39,10 @@ app.use(function(req, res, next){
   res.locals.messages = require('express-messages')(req, res)
   next()
 })
+
+// BodyParser Middleware
+app.use(bodyParser.json())
+app.use(bodyParser.urlencoded({ extended: true })) // for parsing application/x-www-form-urlencoded
 
 /* ***********************
  * View Engine and Templates

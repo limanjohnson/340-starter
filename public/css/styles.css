@@ -16,6 +16,10 @@ h1, h2, h3, h4, h5, h6 {
   color: #333;
 }
 
+main {
+  min-height: 25vh;
+}
+
 /******* Header CSS ***************/
 header {
   display:flex;
@@ -197,6 +201,136 @@ main h1 {
 .notice {
   color:red;
   list-style: none;
+}
+
+/******* Login CSS ***************/
+
+.wrapper {
+  box-sizing: border-box;
+  background-color: rgb(240, 240, 240);
+  height:50vh;
+  /* width: max(40%, 600px); */
+  border-radius: 20px;
+  display:flex;
+  flex-direction: column;
+  align-items:center;
+  justify-content:center;
+  margin:1em;
+  padding: 0 1em;
+}
+
+form {
+  margin-top: 20px;
+  margin-bottom:20px;
+  display: flex;
+  flex-direction: column;
+  align-items:center;
+  justify-content:center;
+  gap:10px;
+}
+
+form > div {
+  width:100%;
+  display:flex;
+  justify-content: center;;
+}
+
+form label {
+  flex-shrink: 0;
+  height: 50px;
+  width:50px;
+
+  border-radius:10px 0 0 10px;
+
+  background-color:#969696;
+
+  display:flex;
+  justify-content:center;
+  align-items:center;
+}
+
+svg {
+  fill:black;
+}
+
+form input {
+  box-sizing:border-box;
+  flex-grow:1;
+  min-width:0;
+  height:50px;
+  padding:1em;
+  font:inherit;
+  border-radius: 0 10px 10px 0;
+  border: 2px solid #f9f9f9;
+  border-left: none;
+  background-color: #f9f9f9;
+  transition: 150ms ease;
+}
+
+form input:hover {
+  border-color:#969696
+}
+
+form input:focus {
+  outline: none;
+  border-color: #969696;
+}
+
+form input::placeholder {
+  color: #333;
+}
+
+form button {
+  margin-top: 10px;
+  border: none;
+  border-radius: 1000px;
+  padding: 0.85em 4em;
+  background-color: #969696;
+  color: white;
+  font-weight: 600;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: 150ms ease;
+}
+form button:hover {
+  background-color: #333;
+}
+
+form button:focus {
+  outline: none;
+  background-color: #333;
+}
+a {
+  text-decoration: none;
+}
+
+.guideline {
+  font-size: .75em;
+}
+
+/******* Inventory Forms CSS ***************/
+form.inventory-form {
+  align-items: start;
+}
+
+form.inventory-form label {
+  width: 150px;
+  border-radius: 10px;
+  background-color: #dadada;
+}
+
+form.inventory-form input {
+  border-radius:10px;
+  width:100%;
+}
+
+textarea#inv_description {
+  width: 100%;
+}
+
+select#classificationList {
+  height: 44px;
+  width: 100%;
 }
 
 /******* Vehicles Inventory CSS ***************/
