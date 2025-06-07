@@ -4,7 +4,7 @@ const invController = require('../controllers/invController')
 const invValidate = require('../utilities/inventory-validation')
 const utilities = require('../utilities');
 
-router.get('/type/:classificationId', invController.buildByClassificationId);
+router.get('/type/:classification_id', invController.buildByClassificationId);
 router.get('/detail/:inventory_id', invController.buildByInventoryId);
 router.get('/', invController.buildManagement);
 
@@ -16,7 +16,6 @@ router.post('/add-classification',
     invValidate.classificationRules(),
     invValidate.checkClassData,
     invController.addClassification);
-
 /*
  * Add a new car to inventory
  * */
@@ -32,6 +31,14 @@ router.get('/getInventory/:classification_id',
 /*
  * Edit a car in inventory
  * */
-router.get('/edit/:inventory_id', utilities.handleErrors(invController.buildEditInventory));
+router.get('/edit/:inv_id', utilities.handleErrors(invController.buildEditInventory));
+
+/*
+ * Update a car in inventory
+ * */
+router.post('/update/', 
+    invValidate.inventoryRules(),
+    invValidate.checkUpdateData,
+    utilities.handleErrors(invController.updateInventory));
 
 module.exports = router;

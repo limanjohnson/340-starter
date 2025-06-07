@@ -62,13 +62,25 @@ validate.inventoryRules = () => {
           .trim()
           .escape()
           .notEmpty()
-          .withMessage("An image is required"),
+          .withMessage("An image is required")
+          .custom((value) => {
+            if (value == 'images/vehicles/no-image.png') {
+              return true;
+            }
+            return true;
+          }),
 
         body("inv_thumbnail")
           .trim()
           .escape()
           .notEmpty()
-          .withMessage("A thumbnail is required"),
+          .withMessage("A thumbnail is required")
+          .custom((value) => {
+            if (value == 'images/vehicles/no-image-tn.png') {
+              return true;
+            }
+            return true;
+          }),
 
         body("inv_price")
           .trim()
@@ -143,5 +155,33 @@ validate.checkInvData = async (req, res, next) => {
     next()
 }
 
+/* ******************************
+ * Check inventory data and return errors or update existing inventory
+ * ***************************** */
+validate.checkUpdateData = async (req, res, next) => {
+  const { inv_id, inv_make, inv_model, inv_year, inv_description, inv_image, inv_thumbnail, inv_price, inv_miles, inv_color, classification_id } = req.body;
+  let errors = validationResult(req)
+  if (!errors.isEmpty()) {
+      let nav = await utilities.getNav()
+      res.render("inventory/edit-inventory", {
+          errors: errors.array(),
+          title: `Edit ${inv_make} ${inv_model}`,
+          nav,
+          inv_id,
+          inv_make,
+          inv_model,
+          inv_year,
+          inv_description,
+          inv_image,
+          inv_thumbnail,
+          inv_price,
+          inv_miles,
+          inv_color,
+          classification_id,
+      })
+      return
+  }
+  next()
+}
 
 module.exports = validate;

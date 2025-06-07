@@ -119,11 +119,11 @@ invCont.buildAddInventory = async function (req, res, next) {
     try {
         let nav = await utilities.getNav();
         let classifications = await invModel.getClassification();
-        let classificationList = await utilities.buildClassificationList();
+        let classificationSelect = await utilities.buildClassificationList();
         res.render('./inventory/add-inventory', {
             title: "Add Car",
             nav,
-            classificationList,
+            classificationSelect,
             errors: null,
         });
     } catch (error) {
@@ -136,9 +136,33 @@ invCont.buildAddInventory = async function (req, res, next) {
  * Add inventory
  * ******************* */
 invCont.addInventory = async function (req, res, next) {
-    const { inv_make, inv_model, inv_year, inv_description, inv_image, inv_thumbnail, inv_price, inv_miles, inv_color, classification_id } = req.body;
+    const {
+        inv_make,
+        inv_model,
+        inv_year,
+        inv_description,
+        inv_image,
+        inv_thumbnail,
+        inv_price,
+        inv_miles,
+        inv_color,
+        classification_id } = req.body;
+
+        const imagePath = inv_image || 'images/vehicles/no-image.png';
+        const thumbnailPath = inv_thumbnail || 'images/vehicles/no-image.png';
     try {
-        const result = await invModel.addInventory({ inv_make, inv_model, inv_year, inv_description, inv_image, inv_thumbnail, inv_price, inv_miles, inv_color, classification_id });
+        const result = await invModel.addInventory({
+            inv_make,
+            inv_model,
+            inv_year,
+            inv_description,
+            inv_image: imagePath,
+            inv_thumbnail: thumbnailPath,
+            inv_price,
+            inv_miles,
+            inv_color,
+            classification_id
+        });
         if (result) {
             req.flash("notice", "Inventory item added successfully.");
             res.redirect("/inv");
@@ -147,7 +171,7 @@ invCont.addInventory = async function (req, res, next) {
             res.status(500).render('./inventory/add-inventory', {
                 title: "Add Car",
                 nav: await utilities.getNav(),
-                classificationList: await utilities.buildClassificationList(),
+                classificationSelect: await utilities.buildClassificationList(),
                 errors: null,
             });
         }
@@ -173,17 +197,33 @@ invCont.getInventoryJSON = async (req, res, next) => {
  /* ********************
  * Edit inventory view
  * ******************* */
-invCont.buildEditInventory = async function (req, res, next) {
+ invCont.buildEditInventory = async (req, res, next) => {
     try {
-        const inventory_id = parseInt(req.params.inv_id);
+        const inv_id = parseInt(req.params.inv_id, 10);
+        if (isNaN(inv_id)) {
+            console.error("Invalid inv_id:", req.params.inv_id);
+            req.flash("notice", "Invalid inventory ID.");
+            return res.redirect("/inv/");
+        }
+
         let nav = await utilities.getNav();
-        const itemData = await invModel.getInventoryById(inventory_id);
+        const itemData = await invModel.getInventoryById(inv_id);
+        if (!itemData) {
+            console.error("No inventory item found for ID:", inv_id);
+            req.flash("notice", "No inventory item found.");
+            return res.redirect("/inv/");
+        }
+
         let classificationSelect = await utilities.buildClassificationList(itemData.classification_id);
+        if (!classificationSelect) {
+            classificationSelect = '<select id="classification_id" name="classification_id"><option value="">No classifications available</option></select>';
+        }
+
         const itemName = `${itemData.inv_make} ${itemData.inv_model}`;
         res.render('./inventory/edit-inventory', {
             title: "Edit " + itemName,
             nav,
-            classificationSelect: classificationSelect,
+            classificationSelect,
             errors: null,
             inv_id: itemData.inv_id,
             inv_make: itemData.inv_make,
@@ -198,10 +238,83 @@ invCont.buildEditInventory = async function (req, res, next) {
             classification_id: itemData.classification_id,
         });
     } catch (error) {
-        console.error("Error in buildAddInventory: " + error.message);
+        console.error("Error in buildEditInventory:", error.message);
         next(error);
     }
-}
+};
+
+/* ********************
+ * Update inventory data
+ * ******************* */
+invCont.updateInventory = async function (req, res, next) {
+    let nav = await utilities.getNav();
+    const {
+        inv_id,
+        inv_make,
+        inv_model,
+        inv_description,
+        inv_image,
+        inv_thumbnail,
+        inv_price,
+        inv_year,
+        inv_miles,
+        inv_color,
+        classification_id,
+    } = req.body;
+
+    // const imagePath = inv_image || 'images/vehicles/no-image.png';
+    // const thumbnailPath = inv_thumbnail || 'images/vehicles/no-image.png';
+
+    try {
+        const updateResult = await invModel.updateInventory(
+            inv_id,
+            inv_make,
+            inv_model,
+            inv_description,
+            inv_image,
+            inv_thumbnail,
+            inv_price,
+            inv_year,
+            inv_miles,
+            inv_color,
+            classification_id,
+        );
+
+        if (updateResult) {
+            const itemName = updateResult.inv_make + " " + updateResult.inv_model;
+            req.flash("notice", `The ${itemName} was successfully updated.`);
+            res.redirect("/inv/");
+        } else {
+            let classificationSelect = await utilities.buildClassificationList(classification_id);
+            if (!classificationSelect) {
+                classificationSelect = '<select id="classification_id" name="classification_id"><option value="">No classifications available</option></select>';
+            }
+
+            const itemName = `${inv_make} ${inv_model}`;
+            req.flash("notice", "Sorry, the update failed.");
+            res.status(501).render("inventory/edit-inventory", {
+                title: "Edit " + itemName,
+                nav,
+                classificationSelect,
+                errors: null,
+                inv_id,
+                inv_make,
+                inv_model,
+                inv_year,
+                inv_description,
+                inv_image,
+                inv_thumbnail,
+                inv_price,
+                inv_miles,
+                inv_color,
+                classification_id,
+            });
+        }
+    } catch (error) {
+        console.error("Error in updateInventory:", error.message);
+        next(error);
+    }
+};
 
 invCont
 

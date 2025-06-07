@@ -51,15 +51,14 @@
         type="file"
         id="inv_image"
         name="inv_image"
-        required
-        value="<%= locals.inv_image || '' %>"/>
+        value="<%= locals.inv_image || 'images/vehicles/no-image.png' %>"/>
+
     <label for="inv_thumbnail">Thumbnail</label>
     <input
         type="file"
         id="inv_thumbnail"
         name="inv_thumbnail"
-        required
-        value="<%= locals.inv_thumbnail || '' %>"/>
+        value="<%= locals.inv_thumbnail || 'images/vehicles/no-image-tn.png' %>"/>
     <label for="inv_price">Price</label>
     <input
         type="number"
@@ -84,6 +83,6 @@
         required
         value="<%= locals.inv_color || '' %>"/>
     <label for="classification_id">Classification</label>
-    <%- classificationList %>
+    <%- classificationSelect %>
     <button type="submit">Add</button>
 </form>
