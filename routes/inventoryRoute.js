@@ -2,7 +2,7 @@ const express = require('express');
 const router = new express.Router();
 const invController = require('../controllers/invController')
 const invValidate = require('../utilities/inventory-validation')
-
+const utilities = require('../utilities');
 
 router.get('/type/:classificationId', invController.buildByClassificationId);
 router.get('/detail/:inventory_id', invController.buildByInventoryId);
@@ -25,5 +25,13 @@ router.post('/add-inventory',
     invValidate.inventoryRules(),
     invValidate.checkInvData,
     invController.addInventory);
+
+router.get('/getInventory/:classification_id',
+    utilities.handleErrors(invController.getInventoryJSON));
+
+/*
+ * Edit a car in inventory
+ * */
+router.get('/edit/:inventory_id', utilities.handleErrors(invController.buildEditInventory));
 
 module.exports = router;

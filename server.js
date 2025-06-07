@@ -5,19 +5,20 @@
 /* ***********************
  * Require Statements
  *************************/
-const express = require("express")
-const expressLayouts = require("express-ejs-layouts")
-const env = require("dotenv").config()
-const app = express()
-const bodyParser = require("body-parser")
-const static = require("./routes/static")
-const baseController = require('./controllers/baseController')
-const accountRoute = require('./routes/accountRoute')
-const inventoryRoute = require('./routes/inventoryRoute')
-const utilities = require('./utilities')
-const errorRoute = require('./routes/errorRoute')
-const session = require("express-session")
-const pool = require("./database/")
+const express = require("express");
+const expressLayouts = require("express-ejs-layouts");
+const env = require("dotenv").config();
+const app = express();
+const bodyParser = require("body-parser");
+const static = require("./routes/static");
+const baseController = require('./controllers/baseController');
+const accountRoute = require('./routes/accountRoute');
+const inventoryRoute = require('./routes/inventoryRoute');
+const utilities = require('./utilities');
+const errorRoute = require('./routes/errorRoute');
+const session = require("express-session");
+const pool = require("./database/");
+const cookieParser = require("cookie-parser");
 
 /* ***********************
  * Middleware
@@ -32,6 +33,10 @@ resave: true,
 saveUninitialized: true,
 name: 'sessionId',
 }))
+
+app.use(cookieParser())
+
+app.use(utilities.checkJWTToken);
 
 // Express Messages Middleware
 app.use(require('connect-flash')())

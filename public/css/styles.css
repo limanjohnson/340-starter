@@ -435,6 +435,34 @@ ul#inv-display li a {
   border-radius:5px;
 }
 
+/******* Inventory Management CSS ***************/
+
+select#classificationList {
+  width:50%;
+}
+
+table#inventoryDisplay {
+  display: flex;
+  flex-direction: column;
+  padding: 1em;
+  gap: 10px;
+}
+
+table#inventoryDisplay tbody {
+  display: flex;
+  flex-direction: column;
+  gap: 1em;
+}
+
+table#inventoryDisplay tr {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  padding: 1em;
+}
+
+table#inventoryDisplay tr:nth-child(even) {
+  background-color: #f2f2f2;
+}
 
 
 /******* Footer CSS ***************/
