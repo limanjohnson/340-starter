@@ -59,10 +59,6 @@ validate.inventoryRules = () => {
           .withMessage("Description is required"),
 
         body("inv_image")
-          .trim()
-          .escape()
-          .notEmpty()
-          .withMessage("An image is required")
           .custom((value) => {
             if (value == 'images/vehicles/no-image.png') {
               return true;
@@ -71,10 +67,6 @@ validate.inventoryRules = () => {
           }),
 
         body("inv_thumbnail")
-          .trim()
-          .escape()
-          .notEmpty()
-          .withMessage("A thumbnail is required")
           .custom((value) => {
             if (value == 'images/vehicles/no-image-tn.png') {
               return true;
@@ -163,10 +155,12 @@ validate.checkUpdateData = async (req, res, next) => {
   let errors = validationResult(req)
   if (!errors.isEmpty()) {
       let nav = await utilities.getNav()
+      let classificationSelect = await utilities.buildClassificationList(classification_id)
       res.render("inventory/edit-inventory", {
           errors: errors.array(),
           title: `Edit ${inv_make} ${inv_model}`,
           nav,
+          classificationSelect,
           inv_id,
           inv_make,
           inv_model,

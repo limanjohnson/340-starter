@@ -141,23 +141,21 @@ invCont.addInventory = async function (req, res, next) {
         inv_model,
         inv_year,
         inv_description,
-        inv_image,
-        inv_thumbnail,
         inv_price,
         inv_miles,
         inv_color,
         classification_id } = req.body;
 
-        const imagePath = inv_image || 'images/vehicles/no-image.png';
-        const thumbnailPath = inv_thumbnail || 'images/vehicles/no-image.png';
+        const inv_image = req.body.inv_image || 'images/vehicles/no-image.png';
+        const inv_thumbnail = req.body.inv_thumbnail || 'images/vehicles/no-image.png';
     try {
         const result = await invModel.addInventory({
             inv_make,
             inv_model,
             inv_year,
             inv_description,
-            inv_image: imagePath,
-            inv_thumbnail: thumbnailPath,
+            inv_image,
+            inv_thumbnail,
             inv_price,
             inv_miles,
             inv_color,
