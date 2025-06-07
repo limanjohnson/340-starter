@@ -111,43 +111,82 @@ async function updateInventory(
   inv_model,
   inv_year,
   inv_description,
-  inv_image,
-  inv_thumbnail,
+  inv_image, // Process image field conditionally
+  inv_thumbnail, // Process thumbnail field conditionally
   inv_price,
   inv_miles,
   inv_color,
   classification_id
 ) {
   try {
-    const sql =
-    `UPDATE public.inventory
-    SET
-      inv_make = $1,
-      inv_model = $2,
-      inv_description = $3,
-      inv_image = $4,
-      inv_thumbnail = $5,
-      inv_price = $6,
-      inv_year = $7,
-      inv_miles = $8,
-      inv_color = $9,
-      classification_id =$10
-    WHERE inv_id = $11
-    RETURNING *`;
-    const data = await pool.query(sql, [
+    // Log the incoming parameters for debugging
+    console.log("Query Parameters:", {
       inv_make,
       inv_model,
+      inv_year,
       inv_description,
       inv_image,
       inv_thumbnail,
       inv_price,
-      inv_year,
       inv_miles,
       inv_color,
       classification_id,
-      inv_id
-    ]);
-    return data.rows[0]
+      inv_id,
+    });
+
+    // Start building the SQL query
+    let sql = `
+      UPDATE public.inventory
+      SET
+        inv_make = $1,
+        inv_model = $2,
+        inv_description = $3,
+        inv_price = $4,
+        inv_year = $5,
+        inv_miles = $6,
+        inv_color = $7,
+        classification_id = $8
+    `;
+
+    // Array for query parameters
+    const params = [
+      inv_make,         // $1: inv_make
+      inv_model,        // $2: inv_model
+      inv_description,  // $3: inv_description
+      inv_price,        // $4: inv_price
+      inv_year,         // $5: inv_year
+      inv_miles,        // $6: inv_miles
+      inv_color,        // $7: inv_color
+      classification_id // $8: classification_id
+    ];
+
+    // Conditionally add image field if it is provided
+    if (inv_image) {
+      sql += `, inv_image = $${params.length + 1}`;
+      params.push(inv_image);
+    }
+
+    // Conditionally add thumbnail field if it is provided
+    if (inv_thumbnail) {
+      sql += `, inv_thumbnail = $${params.length + 1}`;
+      params.push(inv_thumbnail);
+    }
+
+    // Add WHERE clause with inv_id
+    sql += ` WHERE inv_id = $${params.length + 1}`;
+    params.push(inv_id);
+
+    // Return the updated row(s)
+    sql += ` RETURNING *`;
+
+    // Debug: log the generated SQL query and parameters
+    console.log("Generated SQL:", sql);
+    console.log("Generated Query Params:", params);
+
+    // Execute the query
+    const data = await pool.query(sql, params);
+
+    return data.rows[0];
   } catch (error) {
     console.error("model error: " + error.message);
   }

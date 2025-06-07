@@ -12,6 +12,13 @@
 <h2>Manage Inventory</h2>
 <p>Select a classification from the list to see the items belonging to the classification</p>
 <%- classificationSelect %>
+<%- messages() %>
+
+<% if (notice) { %>
+  <div class="notice">
+    <p><%= notice %></p>
+  </div>
+<% } %>
 
 <table id="inventoryDisplay"></table>
 

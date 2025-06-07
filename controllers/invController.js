@@ -64,6 +64,7 @@ invCont.buildManagement = async function (req, res, next) {
             nav,
             errors: null,
             classificationSelect,
+            notice: req.flash("notice"),
         })
     } catch (error) {
         console.error("Error in buildManagement: " + error.message)
@@ -250,32 +251,29 @@ invCont.updateInventory = async function (req, res, next) {
         inv_id,
         inv_make,
         inv_model,
+        inv_year,
         inv_description,
         inv_image,
         inv_thumbnail,
         inv_price,
-        inv_year,
         inv_miles,
         inv_color,
         classification_id,
     } = req.body;
-
-    // const imagePath = inv_image || 'images/vehicles/no-image.png';
-    // const thumbnailPath = inv_thumbnail || 'images/vehicles/no-image.png';
 
     try {
         const updateResult = await invModel.updateInventory(
             inv_id,
             inv_make,
             inv_model,
+            inv_year,
             inv_description,
             inv_image,
             inv_thumbnail,
             inv_price,
-            inv_year,
             inv_miles,
             inv_color,
-            classification_id,
+            classification_id // Ensure the order matches the function signature
         );
 
         if (updateResult) {
@@ -313,7 +311,6 @@ invCont.updateInventory = async function (req, res, next) {
         next(error);
     }
 };
-
 invCont
 
 module.exports = invCont;
