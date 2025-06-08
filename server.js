@@ -23,9 +23,13 @@ const cookieParser = require("cookie-parser");
 /* ***********************
  * Middleware
  *************************/
+app.use(cookieParser())
 
 app.use((req, res, next) => {
   const token = req.cookies.jwt;
+  console.log("Cookies: ", req.cookies); // Logs all cookies
+  console.log("Authorization Header: ", req.headers.authorization); // Logs authorization header
+
   if (token) {
     try {
       const decoded = require("jsonwebtoken").verify(token, process.env.ACCESS_TOKEN_SECRET);
@@ -50,8 +54,6 @@ resave: true,
 saveUninitialized: true,
 name: 'sessionId',
 }))
-
-app.use(cookieParser())
 
 app.use(utilities.checkJWTToken);
 

@@ -130,24 +130,25 @@ Util.handleErrors = fn => (req, res, next) => Promise.resolve(fn(req, res, next)
 * Middleware to check token validity
 **************************************** */
 Util.checkJWTToken = (req, res, next) => {
-  if (req.cookies && req.cookies.jwt) {
-    jwt.verify(
-      req.cookies.jwt,
-      process.env.ACCESS_TOKEN_SECRET,
-      function (err, accountData) {
-        if (err) {
-          req.flash("Please log in");
-          res.clearCookie("jwt");
-          return res.redirect("/account/login");
-        }
-        res.locals.accountData = accountData;
-        res.locals.loggedin = 1;
-        next();
+  try {
+    const token = req.cookies.jwt || req.headers.authorization?.split(" ")[1]; // Support both cookies and headers
+    if (!token) {
+      // Only log a warning if the route requires authentication
+      if (req.originalUrl.startsWith("/account") || req.originalUrl.startsWith("/inv")) {
+        console.warn(`JWT Token is missing for protected route: ${req.originalUrl}`);
       }
-    );
-  } else {
-    console.log("JWT cookie is missing");
+      res.locals.isLoggedIn = false; // Set logged-in status to false
+      return next(); // Allow the request to proceed
+    }
+    const decoded = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET); // Verify token
+    req.user = decoded; // Attach the decoded payload to the request
+    res.locals.isLoggedIn = true; // Set logged-in status to true
+    res.locals.user = decoded; // Pass user data to views
     next();
+  } catch (error) {
+    console.error(`Error in JWT Validation for route ${req.originalUrl}: ${error.message}`);
+    res.locals.isLoggedIn = false; // Set logged-in status to false
+    next(); // Allow the request to proceed
   }
 };
 
