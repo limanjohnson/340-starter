@@ -8,7 +8,7 @@ const invCont = {}
  * ******************* */
 invCont.buildByClassificationId = async function (req, res, next) {
     try {
-        const classification_id = req.params.classificationId
+        const classification_id = req.params.classification_id
         const data = await invModel.getInventoryByClassificationId(classification_id)
         if (!data || data.length === 0) {
             throw new Error(`No vehicles found for that classification ID`)

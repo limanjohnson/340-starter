@@ -21,6 +21,8 @@ async function getInventoryByClassificationId(classification_id) {
         [classification_id]
       )
       if (data.rows.length === 0) {
+        console.log("Classification ID:", classification_id);
+        console.log("Query Result:", data.rows);
         const error = new Error(`No inventory items found for that classification ID`)
         error.status = 404
         throw error

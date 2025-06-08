@@ -8,7 +8,7 @@
             <% }) %>
         </ul>
     <% } %>
-    <form action="/account/update/" method="POST">
+    <form class="updateForm" action="/account/update/" method="POST">
         <input type="hidden" name="account_id" value="<%= accountData.account_id %>"/>
 
         <label for="account_firstname">First Name:</label>
@@ -21,5 +21,14 @@
         <input type="email" id="account_email" name="account_email" required value="<%= accountData.account_email %>"/>
 
         <button type="submit">Update Information</button>
+    </form>
+
+    <form class="updateForm" action="/account/update-password" method="POST">
+        <input type="hidden" name="account_id" value="<%= accountData.account_id %>"/>
+
+        <label for="account_password">New Password:</label>
+        <input type="password" id="account_password" name="account_password" required/>
+
+        <button type="submit">Change Password</button>
     </form>
 </main>

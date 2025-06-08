@@ -42,22 +42,27 @@ accCont.buildRegistration = async function (req, res, next) {
 }
 
 /* ***************************
- * Deliver account view
+ * Build account management view
  * ************************* */
 accCont.buildAccountManagement = async function (req, res) {
     try {
         let nav = await utilities.getNav();
+
+        const account_id = res.locals.user?.account_id;
+        const updatedUser = await accModel.getAccountById(account_id);
+
         res.render("account/management", {
             title: "Account",
             nav,
             errors: null,
-        }
-        )
-    } catch (err0r) {
-        console.error("error in buildAccountManagement: " + error.meessage)
-        res.status(500).send("Server Error.")
+            messages: req.flash("notice"),
+            user: updatedUser,
+        });
+    } catch (error) {
+        console.error("error in buildAccountManagement: " + error.message);
+        res.status(500).send("Server Error.");
     }
-}
+};
 
 /* ****************************************
 *  Process Registration
@@ -174,7 +179,7 @@ accCont.accountLogin = async function (req, res) {
 * *************************************** */
 accCont.buildUpdateAccountView = async function (req, res, next) {
     try {
-        let nav = utilities.getNav()
+        let nav = await utilities.getNav()
         const account_id = req.params.account_id;
         const accountData = await accModel.getAccountById(account_id);
         if (!accountData) {
@@ -213,6 +218,14 @@ accCont.updateAccount = async function (req, res, next) {
             account_email,
         );
         if (updateAccount) {
+            const updatedUser = await accModel.getAccountById(account_id);
+            res.locals.user = updatedUser; // update local user data
+            res.session.user = updatedUser; // update session user data
+
+            // Regenerate the JWT token with updated user data
+            const accessToken = jwt.sign(updatedUser, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '1h' });
+            res.cookie("jwt", accessToken, { httpOnly: true, maxAge: 3600 * 1000 });
+
             req.flash("notice", "Account information updated successfully.");
             res.redirect("/account/");
         } else {
@@ -235,5 +248,25 @@ accCont.updateAccount = async function (req, res, next) {
     }
 }
 
+/* ****************************************
+*  Process Password Account
+* *************************************** */
+accCont.updatePassword = async function (req, res, next) {
+    const { account_id, account_password } = req.body;
+    try {
+        const hashedPassword = await bcrypt.hash(account_password, 10);
+        const result = await accModel.updatePassword(account_id, hashedPassword);
+        if (result) {
+            req.flash("notice", "Password updated successfully.");
+            res.redirect("/account/");
+        } else {
+            req.flash("notice", "Failed to update password.");
+            res.redirect(`/account/update/${account_id}`);
+        }
+    } catch (error) {
+        console.error("Error in updatePassword: " + error.message);
+        next(error);
+    }
+};
 
 module.exports = accCont;

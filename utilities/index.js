@@ -156,19 +156,20 @@ Util.checkJWTToken = (req, res, next) => {
  *  Check Login
  * ************************************ */
  Util.checkLogin = (req, res, next) => {
-  if (res.locals.loggedin) {
-    next()
+  if (res.locals.isLoggedIn) {
+    next();
   } else {
-    req.flash("notice", "Please log in.")
-    return res.redirect("/account/login")
+    req.flash("notice", "Please log in.");
+    return res.redirect("/account/login");
   }
- }
+};
 
   /* ****************************************
  *  Check user authorization
  * ************************************ */
 Util.checkAdminOrEmployee = (req, res, next) => {
   const token = req.cookies.jwt;
+  console.log("JWT Token:", token); // Debugging line
   if (!token) {
     req.flash("notice", "You must be logged in to access this page");
     return res.redirect("/account/login");
@@ -176,7 +177,8 @@ Util.checkAdminOrEmployee = (req, res, next) => {
 
   try {
     const decoded = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
-    if (decoded.account_type === 'admin' || decoded.account_type === 'employee') {
+    console.log("Decoded account_type:", decoded.account_type); // Debugging line
+    if (decoded.account_type === 'Admin' || decoded.account_type === 'Employee') {
       next();
     } else {
       req.flash("notice", "You do not have permission to access this page");

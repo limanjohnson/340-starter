@@ -45,4 +45,19 @@ router.post('/update',
     accountController.updateAccount
 )
 
+// Update password
+router.post('/update-password',
+    utilities.checkLogin,
+    accValidate.passwordRules(),
+    accValidate.checkPasswordData,
+    accountController.updatePassword
+)
+
+// Logout route
+router.get('/logout', (req, res) => {
+    res.clearCookie('jwt'); // Clear the JWT cookie
+    req.flash('notice', 'You have been logged out.');
+    res.redirect('/account/login'); // Redirect to login page
+})
+
 module.exports = router;
