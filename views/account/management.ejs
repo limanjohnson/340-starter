@@ -11,5 +11,14 @@
       <% }) %>
     </ul>
   <% } %>
-  <p>You're logged in.</p>
+  <% if (isLoggedIn) { %>
+    <h2>Welcome <%= user.account_firstname %></h2>
+
+    <p><a href="/account/update/<%= user.account_id %>">Update Account Information</a></p>
+
+    <% if (user.account_type === 'employee' || user.account_type === 'admin') { %>
+      <h3>Inventory Management</h3>
+      <p><a href="/inv/">Access Inventory Management</a></p>
+    <% } %>
+  <% } %>
 </main>

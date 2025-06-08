@@ -4,6 +4,7 @@ const accountController = require('../controllers/accountController');
 const accValidate = require('../utilities/account-validation')
 const utilities = require('../utilities');
 
+// Public routes
 router.get('/login', accountController.buildLogin);
 router.get('/register', accountController.buildRegistration);
 
@@ -31,6 +32,17 @@ router.post(
     utilities.handleErrors(accountController.accountLogin),
 )
 
-
+// Update account information
+router.get('/update/:account_id',
+    utilities.checkLogin,
+    utilities.checkJWTToken,
+    accountController.buildUpdateAccountView
+);
+router.post('/update',
+    utilities.checkLogin,
+    accValidate.updateAccountRules(),
+    accValidate.checkUpdateData,
+    accountController.updateAccount
+)
 
 module.exports = router;

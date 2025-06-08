@@ -130,24 +130,26 @@ Util.handleErrors = fn => (req, res, next) => Promise.resolve(fn(req, res, next)
 * Middleware to check token validity
 **************************************** */
 Util.checkJWTToken = (req, res, next) => {
-  if (req.cookies.jwt) {
-   jwt.verify(
-    req.cookies.jwt,
-    process.env.ACCESS_TOKEN_SECRET,
-    function (err, accountData) {
-     if (err) {
-      req.flash("Please log in")
-      res.clearCookie("jwt")
-      return res.redirect("/account/login")
-     }
-     res.locals.accountData = accountData
-     res.locals.loggedin = 1
-     next()
-    })
+  if (req.cookies && req.cookies.jwt) {
+    jwt.verify(
+      req.cookies.jwt,
+      process.env.ACCESS_TOKEN_SECRET,
+      function (err, accountData) {
+        if (err) {
+          req.flash("Please log in");
+          res.clearCookie("jwt");
+          return res.redirect("/account/login");
+        }
+        res.locals.accountData = accountData;
+        res.locals.loggedin = 1;
+        next();
+      }
+    );
   } else {
-   next()
+    console.log("JWT cookie is missing");
+    next();
   }
- }
+};
 
  /* ****************************************
  *  Check Login
@@ -160,5 +162,30 @@ Util.checkJWTToken = (req, res, next) => {
     return res.redirect("/account/login")
   }
  }
+
+  /* ****************************************
+ *  Check user authorization
+ * ************************************ */
+Util.checkAdminOrEmployee = (req, res, next) => {
+  const token = req.cookies.jwt;
+  if (!token) {
+    req.flash("notice", "You must be logged in to access this page");
+    return res.redirect("/account/login");
+  }
+
+  try {
+    const decoded = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
+    if (decoded.account_type === 'admin' || decoded.account_type === 'employee') {
+      next();
+    } else {
+      req.flash("notice", "You do not have permission to access this page");
+      return res.redirect("/");;
+    }
+  } catch (err) {
+    req.flash("notice", "Invalid token, please log in again");
+    return res.redirect("/account/login");
+  }
+}
+
 
 module.exports = Util

@@ -174,6 +174,71 @@ accCont.accountLogin = async function (req, res) {
     }
   }
 
+/* ****************************************
+*  Build Update Account View
+* *************************************** */
+accCont.buildUpdateAccountView = async function (req, res, next) {
+    try {
+        let nav = utilities.getNav()
+        const account_id = req.params.account_id;
+        const accountData = await accModel.getAccountById(account_id);
+        if (!accountData) {
+            req.flash("notice", "Account not found.");
+            return res.status(404).render("/account/");
+        }
+        res.render("account/update", {
+            title: "Update Account",
+            nav,
+            errors: null,
+            accountData
+        })
+    } catch (error) {
+        console.error("error in the buildUpdateAccoutnView: " + error.message);
+        next(error);
+    }
+}
+
+/* ****************************************
+*  Process Update Account
+* *************************************** */
+accCont.updateAccount = async function (req, res, next) {
+    let nav = await utilities.getNav()
+    const { 
+        account_id,
+        account_firstname,
+        account_lastname,
+        account_email,
+    } = req.body;
+
+    try {
+        const updateAccount = await accModel.updateAccount(
+            account_id,
+            account_firstname,
+            account_lastname,
+            account_email,
+        );
+        if (updateAccount) {
+            req.flash("notice", "Account information updated successfully.");
+            res.redirect("/account/");
+        } else {
+            req.flash("notice", "Failed to update account information.");
+            res.status(500).render("account/update", {
+                title: "Update Account Information",
+                nav,
+                errors: null,
+                accountData: {
+                    account_id,
+                    account_firstname,
+                    account_lastname,
+                    account_email
+                }
+            })
+        }
+    } catch (error) {
+        console.error("Error in updateAccount: " + error.message);
+        next(error);
+    }
+}
 
 
 module.exports = accCont;

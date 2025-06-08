@@ -112,5 +112,56 @@ validate.checkRegData = async (req, res, next) => {
   }
 
 
+validate.checkUpdateData = async (req, res, next) => {
+  const { account_firstname, account_lastname, account_email } = req.body;
+  let errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    let nav = await utilities.getNav();
+    res.render("account/management", {
+      errors: errors.array(),
+      title: "Account Management",
+      nav,
+      account_firstname,
+      account_lastname,
+      account_email,
+    });
+    return;
+  }
+  next();
+}
+
+
+  validate.updateAccountRules = () => {
+    return [
+      body("account_firstname")
+        .trim()
+        .escape()
+        .notEmpty()
+        .withMessage("Please provide a first name."),
+  
+      body("account_lastname")
+        .trim()
+        .escape()
+        .notEmpty()
+        .withMessage("Please provide a last name."),
+  
+      body("account_email")
+        .trim()
+        .isEmail()
+        .normalizeEmail()
+        .withMessage("A valid email is required.")
+        .custom(async (account_email, { req }) => {
+          const account_id = req.body.account_id; 
+          const emailExists = await accountModel.checkExistingEmail(account_email);
+          if (emailExists) {
+            const existingAccount = await accountModel.getAccountByEmail(account_email);
+            if (existingAccount.account_id !== parseInt(account_id, 10)) {
+              throw new Error("Email already in use by another account.");
+            }
+          }
+        }),
+    ];
+  };
+
 
 module.exports = validate

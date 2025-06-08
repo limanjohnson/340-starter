@@ -23,6 +23,23 @@ const cookieParser = require("cookie-parser");
 /* ***********************
  * Middleware
  *************************/
+
+app.use((req, res, next) => {
+  const token = req.cookies.jwt;
+  if (token) {
+    try {
+      const decoded = require("jsonwebtoken").verify(token, process.env.ACCESS_TOKEN_SECRET);
+      res.locals.isLoggedIn = true;
+      res.locals.user = decoded;
+    } catch (err) {
+      res.locals.isLoggedIn = false;
+    }
+  } else {
+    res.locals.isLoggedIn = false;
+  }
+  next();
+});
+
 app.use(session({
   store: new (require('connect-pg-simple')(session))({
     createTableIfMissing: true,
