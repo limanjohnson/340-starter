@@ -479,6 +479,37 @@ form.updateForm input {
   border: 2px solid #f9f9f9;
 }
 
+/******* Favorites CSS ***************/
+ul.favorites-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap:20px;
+  margin-bottom: 1em;
+}
+
+ul.favorites-list li {
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  padding: 10px;
+  text-align: center;
+  background-color: #f9f9f9;
+  list-style: none;
+  display: grid;
+  grid-template-rows: 1fr .2fr .25fr;
+}
+
+ul.favorites-list li img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 4px;
+}
+
+ul.favorites-list li p {
+  margin: 10px 0;
+  font-size: 1rem;
+  font-weight: bold;
+}
+
 /******* Footer CSS ***************/
 footer {
   background-color: #333;

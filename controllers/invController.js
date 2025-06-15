@@ -45,6 +45,7 @@ invCont.buildByInventoryId = async function (req, res, next) {
             title: data.inv_make + " " + className,
             nav,
             singlePage,
+            inventory: data,
         })
     } catch (error) {
         console.error("Error in buildByInventoryId: " + error.message)

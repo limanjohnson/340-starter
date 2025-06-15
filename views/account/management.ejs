@@ -16,6 +16,8 @@
 
     <p><a href="/account/update/<%= user.account_id %>">Update Account Information</a></p>
 
+    <p><a href='/account/favorites'>View Favorites</a></p>
+
     <% if (user.account_type === 'Employee' || user.account_type === 'Admin') { %>
       <h3>Inventory Management</h3>
       <p><a href="/inv/">Access Inventory Management</a></p>

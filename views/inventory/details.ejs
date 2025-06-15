@@ -11,3 +11,7 @@
 
 <!-- Inventory items display -->
 <%- singlePage %>
+<form action="/account/favorites/add" method="POST">
+  <input type="hidden" name="inventory_id" value="<%= inventory.inv_id %>">
+  <button type="submit">Add to Favorites</button>
+</form>
